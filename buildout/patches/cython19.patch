@@ -1,0 +1,18 @@
+--- /home/sbi-local/Build/python-openzwave.org/lib/libopenzwave.pyx
++++ /home/sbi-local/Build/python-openzwave/lib/libopenzwave.pyx
+@@ -276,7 +276,14 @@
+     cdef Manager *manager = Get()
+     #logging.debug("libopenzwave.addValueId (CMD,n)=(%s,%s)" % (PyManager.COMMAND_CLASS_DESC[v.GetCommandClassId()],n))
+     #manager.GetValueAsString(v, &value)
+-    values_map.insert ( pair[uint64_t, ValueID] (v.GetId(), v))
++
++    # use heap instead of stack as a
++    # workaround for private default constructor issue
++    # with recent cython versions (tested with cython 19.2 and 20b2)
++    #values_map.insert ( pair[uint64_t, ValueID] (v.GetId(), v))
++    cdef pair[uint64_t, ValueID] *p = new pair[uint64_t, ValueID](v.GetId(), v)
++    values_map.insert ( deref(p) )
++    del p
+     label = manager.GetValueLabel(v)
+     units = manager.GetValueUnits(v)
+     n['valueId'] = {'homeId' : v.GetHomeId(),

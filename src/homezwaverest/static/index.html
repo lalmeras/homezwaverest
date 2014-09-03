@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <link href="/static/ratchet-v2.0.2/css/ratchet.css" rel="stylesheet" />
+        <link href="/static/ratchet-v2.0.2/css/ratchet-theme-ios.css" rel="stylesheet" />
+        <script src="//code.jquery.com/jquery-2.1.1.js"></script>
+        <script src="/static/ratchet-v2.0.2/js/ratchet.js"></script>
+
+        <script src="/static/homezwaverest.js?test"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    </head>
+    <body>
+        <header class="bar bar-nav">
+            <div class="segmented-control">
+                <div class="control-item" data-bind="global-action-level" data-level="0">Fermé</div>
+                <div class="control-item" data-bind="global-action-level" data-level="15">Entr.</div>
+                <div class="control-item" data-bind="global-action-level" data-level="30">20%</div>
+                <div class="control-item" data-bind="global-action-level" data-level="60">50%</div>
+                <div class="control-item" data-bind="global-action-level" data-level="80">60%</div>
+                <div class="control-item" data-bind="global-action-level" data-level="99">Ouv.</div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="node-list-container">
+                <ul id="node-list" class="table-view">
+                </ul>
+            </div>
+        </div>
+
+        <div style="display: none; visibility: hidden;" class="templates">
+            <ul id="zwave-node" class="table-view">
+                <li class="table-view-cell">
+                    <span id="zwave-node-title"></span>
+                    <button data-bind="global-action" class="btn"><span class="icon icon-play"></span></button>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
