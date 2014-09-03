@@ -11,7 +11,7 @@ import sys
 device="/dev/ttyACM0"
 
 options = ZWaveOption(device, \
-  config_path="../openzwave/config", \
+  config_path="parts/python-openzwave/openzwave/config", \
   user_path=".", cmd_line="")
 options.set_log_file("OZW_Log.log")
 options.set_append_log_file(False)
