@@ -19,11 +19,22 @@
                     $('#zwave-node-location', $nodeWrapper).text(item.location);
                     var $node = $($nodeWrapper.html());
                     $node.on('click', '[data-bind=global-action]', { node_id: item.node_id }, doAction);
+                    $node.on('click', '[data-bind=config-action]', { node_id: item.node_id }, doConfig);
                     $('#node-list').append($node);
                 });
             },
         });
 
+        var doConfig = function(event) {
+	    var node_id = event.data.node_id;
+	    var data = 'Yes';
+	    var index = 29;
+	    $.ajax({
+	        url : '/node/' + node_id + '/command_class/112/value/' + index + '/' + data + '/',
+		type : 'PUT',
+	    })
+        };
+        
         var doAction = function(event) {
             var node_id = event.data.node_id;
             var data = level;
@@ -32,7 +43,7 @@
                 url : '/node/' + node_id + '/command_class/38/value/' + index + '/' + data + '/',
                 type : 'PUT',
             });
-        }
+        };
 
         $('[data-bind=global-action-level]').click(function(event) {
             $(window).trigger('hzrGlobalAction', Number($(this).attr('data-level')));

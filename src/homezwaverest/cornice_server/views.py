@@ -60,9 +60,9 @@ def put_node_value(request):
     network_provider = NetworkProvider(network)
     node_id = request.validated['node_id']
     value_id = request.validated['value_id']
-    data = request.validated['data']
+    data = get_data(request.validated['data'])
     value = network_provider.get_node_value_by_id(node_id, value_id)
-    value.data = int(data)
+    value.data = data
     return RestNodeValue(value)
 
 @node_value_index_data.put(schema=NodeIdCommandClassValueIndexDataSchema)
@@ -71,11 +71,21 @@ def put_node_value(request):
     node_id = request.validated['node_id']
     command_class = request.validated['command_class']
     index = request.validated['index']
-    data = request.validated['data']
+    data = get_data(request.validated['data'])
     value = network_provider.get_node_value(node_id, command_class, index)
-    value.data = int(data)
+    value.data = data
     return RestNodeValue(value)
 
+def get_data(raw_data):
+    if raw_data == 'true':
+        return True
+    if raw_data == 'false':
+        return False
+    try:
+        return int(raw_data)
+    except:
+        return raw_data
+    
 
 class NetworkProvider(object):
     def __init__(self, my_network):
