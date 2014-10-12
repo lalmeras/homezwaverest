@@ -10,8 +10,10 @@ import sys
 
 device="/dev/ttyACM0"
 
+zwave_config = os.getenv('HOMEZWAVEREST_OPENZWAVE_CONFIG_PATH', '/tmp')
+
 options = ZWaveOption(device, \
-  config_path="parts/python-openzwave/openzwave/config", \
+  config_path=zwave_config, \
   user_path=".", cmd_line="")
 options.set_log_file("OZW_Log.log")
 options.set_append_log_file(False)
