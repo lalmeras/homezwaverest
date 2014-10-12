@@ -1,0 +1,8 @@
+buildout/bin/*
+buildout/cache/*
+buildout/parts/*
+buildout/eggs/*
+buildout/develop-eggs
+**/*.pyc
+**/*.swp
+homezwaverest.egg-info
