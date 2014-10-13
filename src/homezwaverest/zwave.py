@@ -7,6 +7,7 @@ from openzwave.option import ZWaveOption
 import threading
 import time
 import sys
+import os
 
 device="/dev/ttyACM0"
 
