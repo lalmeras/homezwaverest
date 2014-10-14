@@ -11,7 +11,6 @@ from openzwave.value import ZWaveValue
 from colander import Schema, SchemaNode, String, Int
 
 from homezwaverest.model import RestNetwork, RestNode, RestNodeValue
-from homezwaverest.zwave import network
 
 node_values = Service(name='node-values', path='/node/{node_id}/values/')
 node_value = Service(name='node-value', path='/node/{node_id}/value/{value_id}/')
@@ -44,20 +43,20 @@ class NodeIdCommandClassValueIndexDataSchema(NodeIdSchema):
 
 @node_values.get(schema=NodeIdSchema)
 def get_node_values(request):
-    network_provider = NetworkProvider(network)
+    network_provider = NetworkProvider(request.network)
     node_id = request.validated['node_id']
     return [RestNodeValue(value) for value in network_provider.get_node_values(node_id)]
 
 @node_value.get(schema=NodeIdValueIdSchema)
 def get_node_value(request):
-    network_provider = NetworkProvider(network)
+    network_provider = NetworkProvider(request.network)
     node_id = request.validated['node_id']
     value_id = request.validated['value_id']
     return RestNodeValue(network_provider.get_node_value_by_id(node_id, value_id))
 
 @node_value_data.put(schema=NodeIdValueIdDataSchema)
 def put_node_value(request):
-    network_provider = NetworkProvider(network)
+    network_provider = NetworkProvider(request.network)
     node_id = request.validated['node_id']
     value_id = request.validated['value_id']
     data = get_data(request.validated['data'])
@@ -67,7 +66,7 @@ def put_node_value(request):
 
 @node_value_index_data.put(schema=NodeIdCommandClassValueIndexDataSchema)
 def put_node_value(request):
-    network_provider = NetworkProvider(network)
+    network_provider = NetworkProvider(request.network)
     node_id = request.validated['node_id']
     command_class = request.validated['command_class']
     index = request.validated['index']
@@ -130,8 +129,8 @@ class NetworkProvider(object):
 class NetworkResource(object):
     def __init__(self, request):
         self.request = request
-        assert isinstance(network, ZWaveNetwork)
-        self.network_provider = NetworkProvider(network)
+        assert isinstance(request.network, ZWaveNetwork)
+        self.network_provider = NetworkProvider(request.network)
         """@type NetworkProvider"""
 
     @view(renderer='json')
@@ -143,8 +142,8 @@ class NetworkResource(object):
 class NodeResource(object):
     def __init__(self, request):
         self.request = request
-        assert isinstance(network, ZWaveNetwork)
-        self.network_provider = NetworkProvider(network)
+        assert isinstance(request.network, ZWaveNetwork)
+        self.network_provider = NetworkProvider(request.network)
         """@type NetworkProvider"""
 
     @view(renderer='json')
@@ -163,8 +162,8 @@ class NodeResource(object):
 class NodeValueResource(object):
     def __init__(self, request):
         self.request = request
-        assert isinstance(network, ZWaveNetwork)
-        self.network_provider = NetworkProvider(network)
+        assert isinstance(request.network, ZWaveNetwork)
+        self.network_provider = NetworkProvider(request.network)
         """@type NetworkProvider"""
 
     @view(renderer='json')
@@ -191,8 +190,8 @@ class NodeValueResource(object):
 class NodeCommandClassValueResource(object):
     def __init__(self, request):
         self.request = request
-        assert isinstance(network, ZWaveNetwork)
-        self.network_provider = NetworkProvider(network)
+        assert isinstance(request.network, ZWaveNetwork)
+        self.network_provider = NetworkProvider(request.network)
         """@type NetworkProvider"""
 
     @view(renderer='json')
