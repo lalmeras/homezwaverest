@@ -1,4 +1,12 @@
+import atexit
 from time import sleep
+import threading
+import time
+import sys
+import os
+import signal
+import logging
+
 from openzwave.node import ZWaveNode
 from openzwave.value import ZWaveValue
 from openzwave.scene import ZWaveScene
@@ -6,12 +14,6 @@ from openzwave.controller import ZWaveController
 from openzwave.network import ZWaveNetwork
 from openzwave.option import ZWaveOption
 
-import threading
-import time
-import sys
-import os
-import signal
-import logging
 
 log = logging.getLogger(__name__)
 _NETWORKS = []
@@ -38,26 +40,19 @@ def load_network(device, openzwave_config_path, openzwave_user_path, log_file):
     return network
 
 
-shutdown_flag = False
+def openzwave_stop():
+    log.info('Shutdown asked - notifying networks...')
+    for network in _NETWORKS:
+        network.stop()
+    log.info('openzwave stopped.')
 
 
-class WaitShutdown(threading.Thread):
-    def run(self):
-        while True:
-            if shutdown_flag:
-                log.info('Shutdown asked - notifying networks...')
-                for network in _NETWORKS:
-                    network.stop()
-                log.info('Stopping.')
-                sys.exit(0)
-            sleep(1)
-WaitShutdown().start()
+log.info('Registering SIGTERM handler.')
+atexit.register(openzwave_stop)
 
 
-def sigterm(signum, frame):
-    if signum == signal.SIGTERM:
-        global shutdown_flag
-        shutdown_flag = True
+def raise_system_exit(signum, frame):
+    raise SystemExit
 
 
-signal.signal(signal.SIGTERM, sigterm)
+signal.signal(signal.SIGTERM, raise_system_exit)
