@@ -14,6 +14,8 @@ from homezwaverest.model import RestNetwork, RestNode, RestNodeValue
 
 node_values = Service(name='node-values', path='/node/{node_id}/values/')
 node_value = Service(name='node-value', path='/node/{node_id}/value/{value_id}/')
+node_value_index = Service(name='node-value-index',
+                                path='/node/{node_id}/command_class/{command_class}/value/{index}/')
 node_value_data = Service(name='node-value-data', path='/node/{node_id}/value/{value_id}/{data}/')
 node_value_index_data = Service(name='node-value-index-data',
                                 path='/node/{node_id}/command_class/{command_class}/value/{index}/{data}/')
@@ -34,6 +36,11 @@ class NodeIdValueIdSchema(NodeIdSchema):
 
 class NodeIdValueIdDataSchema(NodeIdValueIdSchema):
     data = SchemaNode(String(), title="data", location="path")
+
+
+class NodeIdCommandClassValueIndexSchema(NodeIdSchema):
+    command_class = SchemaNode(Int(), title="command_class", location="path")
+    index = SchemaNode(Int(), title="index", location="path")
 
 
 class NodeIdCommandClassValueIndexDataSchema(NodeIdSchema):
@@ -62,6 +69,15 @@ def put_node_value(request):
     data = get_data(request.validated['data'])
     value = network_provider.get_node_value_by_id(node_id, value_id)
     value.data = data
+    return RestNodeValue(value)
+
+@node_value_index.put(schema=NodeIdCommandClassValueIndexSchema)
+def put_node_value(request):
+    network_provider = NetworkProvider(request.network)
+    node_id = request.validated['node_id']
+    command_class = request.validated['command_class']
+    index = request.validated['index']
+    value = network_provider.get_node_value(node_id, command_class, index)
     return RestNodeValue(value)
 
 @node_value_index_data.put(schema=NodeIdCommandClassValueIndexDataSchema)

@@ -40,10 +40,10 @@ class RestNodeValue(object):
             index=self.value.index,
             label=self.value.label,
             help=self.value.help,
-            data=self.value.data,
+            data=self.value.data_as_string,
             value_id=self.value.value_id,
             type=self.value.type,
-            units=self.value.units,
+            units=self.value.units
         )
 
 
