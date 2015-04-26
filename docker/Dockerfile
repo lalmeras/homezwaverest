@@ -1,8 +1,7 @@
-FROM imcsk8/fedora-20-i386
+# packages required for application build are listed in yum_install.sh
+# yum_install.sh can be added to RUN to prepare a raw image
+FROM 192.168.0.5:5000/lalmeras/homezwaverest-base-i386
 
 COPY scripts /root/
-RUN /root/yum_proxy.sh \
-	&& /root/yum_install.sh \
-	&& /root/homezwaverest_build.sh \
-	&& yum clean all
+RUN /root/homezwaverest_build.sh 
 

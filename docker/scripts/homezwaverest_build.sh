@@ -2,7 +2,7 @@
 
 set -e
 
-export http_proxy=http://192.168.0.42:8123
+#export http_proxy=http://192.168.0.42:8123
 
 useradd homezwaverest
 cd /home/homezwaverest
